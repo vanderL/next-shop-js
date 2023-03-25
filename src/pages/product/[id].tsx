@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetStaticProps } from "next"
+import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import Stripe from "stripe"
@@ -17,7 +17,11 @@ interface ProductProps {
 
 
 export default function ProductComId({ product }: ProductProps) {
-  const { query } = useRouter()
+  // const { isFallback } = useRouter()
+
+  // if (isFallback) {
+  //   return <p>Loading...</p>
+  // }
 
   return (
     <ProductContainer>
@@ -35,8 +39,16 @@ export default function ProductComId({ product }: ProductProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<any, { id: string }> = async ({ params }) => {
-  // export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [
+      { params: { id: 'prod_NZpXn2zg3a20G9' } }
+    ],
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ params }) => {
   const productId = params.id;
 
   const product = await stripe.products.retrieve(productId, {
@@ -58,6 +70,6 @@ export const getServerSideProps: GetServerSideProps<any, { id: string }> = async
         description: product.description,
       }
     },
-    // revalidate: 60 * 60 * 1,
+    revalidate: 60 * 60 * 1,
   }
 }
