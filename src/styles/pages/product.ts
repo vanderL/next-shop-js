@@ -30,7 +30,6 @@ export const ImageContainer = styled('div', {
 export const ProductDetails = styled('div', {
   display: 'flex',
   flexDirection: 'column',
-
   h1: {
     fontSize: '$2xl',
     color: '$gray300'
@@ -61,7 +60,12 @@ export const ProductDetails = styled('div', {
     fontWeight: 'bold',
     fontSize: '$md',
 
-    '&:hover': {
+    '&:disabled': {
+      opacity: 0.6,
+      cursor: 'progress',
+    },
+
+    '&:not(:disabled):hover': {
       backgroundColor: '$green500',
       transition: 'ease-in-out .3s',
 
