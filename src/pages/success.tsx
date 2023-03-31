@@ -35,6 +35,15 @@ export default function Success({ customerName, product }: SuccessProps) {
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   // const { session_id: sessionId } = query;
+  if (!query.session_id) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      }
+    }
+  }
+
   const sessionId = String(query.session_id);
 
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
@@ -43,8 +52,6 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   const customerName = session.customer_details.name;
   const product = session.line_items.data[0].price.product as Stripe.Product;
-
-  console.log(product)
 
   return {
     props: {
